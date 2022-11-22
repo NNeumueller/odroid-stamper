@@ -19,6 +19,11 @@ apt install @@DEFAULT_APT_OPTIONS@@ \
 	linux-image-@@DEFAULT_KERNEL_PACKAGE@@ \
 	@@DEFAULT_BOOTSCRIPT_PACKAGE@@ || exit 1
 
+if [ "x@@BUILD_DKMS@@" = "xtrue" ]; then
+	apt install @@DEFAULT_APT_OPTIONS@@ \
+		linux-headers-@@DEFAULT_KERNEL_PACKAGE@@
+fi
+
 if ls /overlay/host/debs/*.deb 1>/dev/null 2>&1; then
 	dpkg -i $(ls /overlay/host/debs/*.deb)
 	apt install --fix-broken @@DEFAULT_APT_OPTIONS@@

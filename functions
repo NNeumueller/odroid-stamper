@@ -146,6 +146,10 @@ get_flavour_packages() {
         pkgs="${pkgs} casper"
     fi
 
+    if [ "x${WIFI}" = "xtrue" ]; then
+        pkgs="${pkgs} $(get_packages addon/wifi/packages)"
+    fi
+
     echo ${pkgs} | tr " " "\n" | sort | uniq | tr "\n" " "
 }
 
@@ -451,6 +455,7 @@ do_preinstall() {
             -e "s,@@LIVESYSTEM@@,${LIVESYSTEM},g" \
             -e "s,@@MACHINEID@@,$(dbus-uuidgen),g" \
             -e "s,@@INTERNAL@@,${INTERNAL},g" \
+            -e "s,@@BUILD_DKMS@@,${BUILD_DKMS},g" \
             ${fixup}
     done
 
