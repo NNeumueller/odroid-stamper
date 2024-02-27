@@ -1,0 +1,15 @@
+get_machine_name() {
+	echo "Hardkernel ODROID-M2"
+}
+
+get_kernel_package() {
+	echo "5.10.0-odroid-arm64"
+}
+
+get_bootscript_package() {
+	echo "bootscript-odroidm2"
+}
+
+get_reserved_sectors() {
+	echo 6144
+}
