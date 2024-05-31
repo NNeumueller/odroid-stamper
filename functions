@@ -400,6 +400,7 @@ do_copy_custom_files_by_dir() {
     dirs="${dirs} ${TOPDIR}/distro/${DISTRO}/${FLAVOUR}"
     dirs="${dirs} ${TOPDIR}/boards/${BOARD}"
     dirs="${dirs} ${TOPDIR}/boards/${BOARD}/distro/${DISTRO}"
+    dirs="${dirs} ${TOPDIR}/boards/${BOARD}/distro/${DISTRO}/${FLAVOUR}"
     dirs="${dirs} ${TOPDIR}/custom/${CUSTOMOS}"
 
     for dir in ${dirs}; do
