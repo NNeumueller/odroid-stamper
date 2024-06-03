@@ -4,6 +4,11 @@ export DEBIAN_FRONTEND=noninteractive
 
 rm -f /etc/apt/sources.list.d/launchpad-hardkernel-ppa.list
 
+if [ "x@@OSNAME@@" = "xdebian" ]; then
+	apt update --allow-releaseinfo-change
+	apt install @@DEFAULT_APT_OPTIONS@@ gnupg || exit 1
+fi
+
 apt-key adv --keyserver keyserver.ubuntu.com \
 	--recv-keys 4F71126C02B8F823
 
