@@ -1,0 +1,3 @@
+if test -n "${kiosk.url}"; then
+	setenv bootargs "${bootargs} kiosk.url=${kiosk.url}"
+fi

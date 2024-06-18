@@ -1,0 +1,4 @@
+# This is required since service file needs default account, but the package
+# is installed before it's created.
+
+dpkg-reconfigure odroid-kiosk-weston
