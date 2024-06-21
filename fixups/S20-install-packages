@@ -12,6 +12,7 @@ apt purge -y linux-image-arm64
 apt update --allow-releaseinfo-change \
 	&& apt upgrade -y
 apt install @@DEFAULT_APT_OPTIONS@@ \
+	odroid-alsa \
 	odroid-base \
 	flash-kernel \
 	rsync \
