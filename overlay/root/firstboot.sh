@@ -23,7 +23,10 @@ resize2fs ${rootdev}
 
 rm -f /etc/ssh/ssh_host* && ssh-keygen -A
 
-sed -i "s/^PasswordAuthentication.*/PasswordAuthentication yes/g" /etc/ssh/sshd_config
+for sshd_config in /etc/ssh/sshd_config \
+	/etc/ssh/sshd_config.d/60-cloudimg-settings.conf; do
+	sed -i "s/^PasswordAuthentication.*/PasswordAuthentication yes/g" ${sshd_config}
+done
 sed -i "s/^KbdInteractiveAuthentication.*/KbdInteractiveAuthentication yes/g" /etc/ssh/sshd_config
 
 systemctl enable ssh
