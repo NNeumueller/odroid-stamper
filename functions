@@ -585,7 +585,7 @@ do_create_image() {
     if [ "x${LIVESYSTEM}" = "xtrue" ]; then
         do_create_squashfs ${target}
     else
-        do_create_partition ${target} 256
+        do_create_partition ${target} 512
     fi
 }
 
