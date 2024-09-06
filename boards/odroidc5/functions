@@ -1,0 +1,15 @@
+get_machine_name() {
+	echo "Hardkernel ODROID-C5"
+}
+
+get_kernel_package() {
+	echo "5.15.153-odroid-arm64"
+}
+
+get_bootscript_package() {
+	echo "bootscript-odroidc5"
+}
+
+get_reserved_sectors() {
+	echo 16384
+}

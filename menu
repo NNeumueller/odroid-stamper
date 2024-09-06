@@ -40,6 +40,7 @@ do_menu_board() {
         "odroidn2l" "Hardkernel ODROID-N2L" \
         "odroidn2plus" "Hardkernel ODROID-N2Plus" \
         "odroidc4" "Hardkernel ODROID-C4" \
+        "odroidc5" "Hardkernel ODROID-C5" \
         "odroidhc4" "Hardkernel ODROID-HC4" \
         "odroidgo2" "Hardkernel ODROID-GO2" \
         "odroidm1" "Hardkernel ODROID-M1" \
@@ -57,7 +58,7 @@ do_menu_board() {
             odroidxu4)
                 ARCH=armhf
                 ;;
-            odroidn2 | odroidn2plus | odroidc4 | odroidhc4 | odroidm1 | odroidm1s | odroidm2)
+            odroidn2 | odroidn2plus | odroidc4 | odroidc5 | odroidhc4 | odroidm1 | odroidm1s | odroidm2)
                 ARCH=arm64
                 ;;
             odroidgo2)

@@ -36,3 +36,6 @@ if [ "x@@OSNAME@@" = "xdebian" ]; then
 ${OPTION} http://deb.debian.org/debian @@DEFAULT_DISTRO@@ non-free-firmware
 __EOF
 fi
+
+#sed -i 's|^[^#]*jammy-security|#&|' /etc/apt/sources.list
+#cat /etc/apt/sources.list.d/ppa-linuxfactory-or-kr.list
