@@ -1,0 +1,12 @@
+#!/bin/sh
+
+CONF=/etc/initramfs-tools/initramfs.conf
+
+if [ -f $CONF ]; then
+	. $CONF
+
+	if [ "$COMPRESS" != "gzip" ]; then
+		sed -i "s/COMPRESS=.*/COMPRESS=gzip/g" $CONF
+		/usr/sbin/update-initramfs -u
+	fi
+fi
