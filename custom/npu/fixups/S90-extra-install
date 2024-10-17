@@ -1,0 +1,9 @@
+#!/bin/sh
+
+BOARD=@@DEFAULT_BOARD@@
+
+case ${BOARD} in
+	odroidm1)
+		apt install -y rkaiq
+		;;
+esac

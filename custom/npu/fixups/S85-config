@@ -1,5 +1,14 @@
 #!/bin/sh
 
+BOARD=@@DEFAULT_BOARD@@
+OVERLAYS="rknpu"
+
 if [ -f /boot/config.ini ]; then
-	sed -i '/generic/,/overlays/ s/^overlays=.*$/overlays=\"rknpu ov5647\"/' /boot/config.ini
+	case ${BOARD} in
+		odroidm1)
+			OVERLAYS="${OVERLAYS} ov5647"
+			;;
+	esac
+
+	sed -i '/generic/,/overlays/ s/^\(overlays=".*\)"/\1 '"${OVERLAYS}"'"/' /boot/config.ini
 fi

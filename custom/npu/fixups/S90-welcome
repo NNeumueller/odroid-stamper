@@ -1,0 +1,9 @@
+#!/bin/sh
+
+BOARD=@@DEFAULT_BOARD@@
+
+if [ ! -z "${BOARD}" ]; then
+        BOARD=$(echo ${BOARD} | tr '[:lower:]' '[:upper:]' | sed -E 's/ODROID/ODROID-/')
+fi
+
+echo "echo \"You are using the ${BOARD} NPU image. Welcome!\"" >> "${HOME}/.bashrc"

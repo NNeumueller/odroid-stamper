@@ -1,34 +1,35 @@
 #!/bin/sh
 
-CV2=/usr/lib/python3/dist-packages/cv2.cpython-38-aarch64-linux-gnu.so
-HOME=/home/odroid
-RKNN=/home/odroid/rknpu2/runtime/Linux/librknn_api/aarch64/librknnrt.so
-WHL=${HOME}/rknn-toolkit2/rknn-toolkit-lite2-v1.2.0/packages/rknn_toolkit_lite2-1.2.0-cp39-cp39-linux_aarch64.whl
+CUSTOM_USER=@@DEFAULT_USER@@
+USER=${CUSTOM_USER:-odroid}
+HOME=/home/${USER}
+RKNN=${HOME}/rknn-toolkit2/rknpu2/runtime/Linux/librknn_api/aarch64/librknnrt.so
+WHL=${HOME}/rknn-toolkit2/rknn-toolkit-lite2/packages/rknn_toolkit_lite2-2.1.0-cp39-cp39-linux_aarch64.whl
+MPP_PATH=${HOME}/rknn-toolkit2/rknpu2/examples/3rdparty/mpp/Linux/aarch64
 
-virtualenv ${HOME}/.rknn --python=3.9 --system-site-package
+echo "I: cloning rknn-toolkit2 repository"
+git clone https://github.com/hardkernel/rknn-toolkit2 ${HOME}/rknn-toolkit2 --depth=1
+git clone https://github.com/hardkernel/rknn_model_zoo ${HOME}/rknn_model_zoo --depth=1
 
-echo "========== symlink cv2 start =========="
-[ -f ${CV2} ] && ln -s ${CV2} ${HOME}/.rknn/lib/python3.9/site-packages/cv2.so
-echo "========== symlink cv2 finish =========="
+echo "I: creating python virtual environment (using: Pyhton3.9)"
+python3.9 -m venv ${HOME}/.rknn
 
-echo "========== git clone start =========="
-git clone https://github.com/hardkernel/rknpu2 ${HOME}/rknpu2
-git clone https://github.com/hardkernel/rknn-toolkit2 ${HOME}/rknn-toolkit2
-echo "========== git clone finish =========="
+[ -f ${WHL} ] && ${HOME}/.rknn/bin/python3.9 -m pip install ${WHL}
+yes | ${HOME}/.rknn/bin/python3.9 -m pip install opencv-python
 
-echo "========== pip install start =========="
-yes | ${HOME}/.rknn/bin/python3.9 -m pip install -I opencv-python
-[ -f ${WHL} ] && ${HOME}/.rknn/bin/python3 -m pip install ${WHL}
-yes | ${HOME}/.rknn/bin/python3.9 -m pip uninstall opencv-python
-echo "========== pip install finish =========="
+echo "I: setting up environment"
+[ -f "${MPP_PATH}/librockchip_mpp.so.0" ] \
+      	&& [ -L "${MPP_PATH}/librockchip_mpp.so.1" ] \
+       	&& [ -L "${MPP_PATH}/librockchip_mpp.so" ] \
+	&& cd ${MPP_PATH} \
+	&& ln -sf librockchip_mpp.so.0 librockchip_mpp.so.1 \
+	&& ln -sf librockchip_mpp.so.0 librockchip_mpp.so \
+	&& cd ${HOME}
+chown -R ${USER}:${USER} ${HOME}/rknn-toolkit2/
+chown -R ${USER}:${USER} ${HOME}/rknn_model_zoo/
+chown -R ${USER}:${USER} ${HOME}/.rknn/
+[ -f ${RKNN} ] && cp ${RKNN} /usr/lib/librknnrt.so
 
-echo "========== examples seting start =========="
-chown -R odroid:odroid ${HOME}/rknpu2/
-chown -R odroid:odroid ${HOME}/rknn-toolkit2/
-chown -R odroid:odroid ${HOME}/.rknn/
-[ -f ${RKNN} ] && ln -s ${RKNN} /usr/lib/librknnrt.so
-echo "========== examples seting finish =========="
-
-echo "# activate venv at first"
+# activate venv at start up
 echo "source ${HOME}/.rknn/bin/activate" >> ${HOME}/.bashrc
-echo "export LD_LIBRARY_PATH=${HOME}/rknpu2/examples/rknn*/install/*/lib" >> ${HOME}/.bashrc
+

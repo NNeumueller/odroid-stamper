@@ -1,0 +1,10 @@
+#!/bin/sh
+
+BOARD=@@DEFAULT_BOARD@@
+
+case ${BOARD} in
+	odroidm1s | odroidm2)
+		sed -i "/video_rkisp/d" /overlay/etc/modules
+		rm -f /overlay/etc/udev/rules.d/99-odroid-video.rules
+		;;
+esac
