@@ -6,6 +6,14 @@ deb [trusted=yes] http://ppa.linuxfactory.or.kr @@DEFAULT_DISTRO@@ main
 __EOF
 fi
 
+if [ ! "x@@DEFAULT_REPO_COMPONENTS@@" = "x" ]; then
+	for component in @@DEFAULT_REPO_COMPONENTS@@; do
+		cat>/etc/apt/sources.list.d/ppa-linuxfactory-or-kr.list<<__EOF
+deb [trusted=yes] http://ppa.linuxfactory.or.kr @@DEFAULT_DISTRO@@ ${component}
+__EOF
+	done
+fi
+
 if [ "x@@INTERNAL@@" = "xtrue" ]; then
 	cat>>/etc/apt/sources.list.d/ppa-linuxfactory-or-kr.list<<__EOF
 deb [trusted=yes] http://ppa.linuxfactory.or.kr @@DEFAULT_DISTRO@@ internal
