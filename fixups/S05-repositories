@@ -1,27 +1,38 @@
 #!/bin/sh
 
+CODENAME=$(cat /etc/os-release | grep VERSION_CODENAME | cut -d'=' -f2)
+
+case ${CODENAME} in
+	"focal" | "buster")
+		OPTION="deb"
+		;;
+	*)
+		OPTION="deb [trusted=yes]"
+		;;
+esac
+
 if [ ! -f /etc/apt/sources.list.d/ppa-linuxfactory-or-kr.list ]; then
 	cat>/etc/apt/sources.list.d/ppa-linuxfactory-or-kr.list<<__EOF
-deb [trusted=yes] http://ppa.linuxfactory.or.kr @@DEFAULT_DISTRO@@ main
+${OPTION} http://ppa.linuxfactory.or.kr @@DEFAULT_DISTRO@@ main
 __EOF
 fi
 
 if [ ! "x@@DEFAULT_REPO_COMPONENTS@@" = "x" ]; then
 	for component in @@DEFAULT_REPO_COMPONENTS@@; do
 		cat>/etc/apt/sources.list.d/ppa-linuxfactory-or-kr.list<<__EOF
-deb [trusted=yes] http://ppa.linuxfactory.or.kr @@DEFAULT_DISTRO@@ ${component}
+${OPTION} http://ppa.linuxfactory.or.kr @@DEFAULT_DISTRO@@ ${component}
 __EOF
 	done
 fi
 
 if [ "x@@INTERNAL@@" = "xtrue" ]; then
 	cat>>/etc/apt/sources.list.d/ppa-linuxfactory-or-kr.list<<__EOF
-deb [trusted=yes] http://ppa.linuxfactory.or.kr @@DEFAULT_DISTRO@@ internal
+${OPTION} http://ppa.linuxfactory.or.kr @@DEFAULT_DISTRO@@ internal
 __EOF
 fi
 
 if [ "x@@OSNAME@@" = "xdebian" ]; then
 	cat>>/etc/apt/sources.list<<__EOF
-deb http://deb.debian.org/debian @@DEFAULT_DISTRO@@ non-free-firmware
+${OPTION} http://deb.debian.org/debian @@DEFAULT_DISTRO@@ non-free-firmware
 __EOF
 fi
