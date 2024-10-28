@@ -22,6 +22,7 @@ usage() {
 	echo "    --keep-builddir: prevent removing temporary directory"
 	echo "                     after building an image."
 	echo "    --kernel: kernel package name to use"
+	echo "    --linuxfactory: alternative server IP address of 'ppa.linuxfactory.or.kr'"
 	exit 1
 }
 
@@ -47,6 +48,8 @@ for opt in "$@"; do
 		--keep-builddir)
 				opt_keep_builddir=true;;
 		--kernel=*)	opt_kernel_package="${opt#*=}";;
+		--linuxfactory=*)
+				opt_linuxfactory="${opt#*=}";;
 		--custom=*)
 				opt_custom="${opt#*=}";;
 		--addon-wifi)	opt_wifi=true;;

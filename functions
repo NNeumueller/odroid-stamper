@@ -439,6 +439,8 @@ do_preinstall() {
     DEFAULT_KERNEL_PACKAGE=$(get_kernel_package)
     [ ! "x${opt_kernel_package}" = "x" ] && DEFAULT_KERNEL_PACKAGE=${opt_kernel_package}
 
+    [ ! "x${opt_linuxfactory}" = "x" ] && DEFAULT_LINUXFACTORY=${opt_linuxfactory}
+
     FIXUPS=`ls -A1 ${rootfs_mnt}${fixups_dir}/*`
     for fixup in ${FIXUPS}; do
         sed -i \
@@ -451,6 +453,7 @@ do_preinstall() {
             -e "s,@@DEFAULT_KERNEL_PACKAGE@@,${DEFAULT_KERNEL_PACKAGE},g" \
             -e "s,@@DEFAULT_BOOTSCRIPT_PACKAGE@@,$(get_bootscript_package),g" \
             -e "s,@@DEFAULT_MACHINE_NAME@@,$(get_machine_name),g" \
+            -e "s,@@DEFAULT_LINUXFACTORY@@,${DEFAULT_LINUXFACTORY},g" \
             -e "s,@@LINUX_KERNEL_CMDLINE@@,root=UUID=${UUID_ROOT} rootwait ro quiet,g" \
             -e "s,@@LINUX_KERNEL_CMDLINE_DEFAULTS@@,$(get_kernel_cmdline_defaults),g" \
             -e "s,@@DEFAULT_DEV_BOOT@@,${UUID_BOOT},g" \
