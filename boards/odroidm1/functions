@@ -3,7 +3,14 @@ get_machine_name() {
 }
 
 get_kernel_package() {
-	echo "odroidm1"
+        case ${DISTRO} in
+                focal)
+                        echo "5.10.0-odroid-arm64"
+                        ;;
+                *)
+                        echo "6.1.0-odroid-arm64"
+                        ;;
+        esac
 }
 
 get_bootscript_package() {
