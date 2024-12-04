@@ -670,13 +670,36 @@ do_custom_installer() {
     url=$(do_url_of_cloudimage ${ARCH} ${DISTRO} ${FLAVOUR})
     [ "x${url}" = "x" ] && panic "E: invalid URL - ${url}"
 
-    #
-    # Download official Cloud Image
-    #
-    echo "I: download official Cloud Image"
     local cloudimage=${download_dir}/$(basename ${url})
-    wget ${url} -O ${cloudimage} \
-        || panic "failed to download cloudimage '${url}'"
+
+    if [ -f ${cloudimage} ]; then
+        local hash_bits=256
+
+        case $(basename ${cloudimage}) in
+            debian-*.tar.xz)
+                hash_bits=512
+        esac
+
+        local hashurl=$(dirname ${url})/SHA${hash_bits}SUMS
+        local hash2=$(sha${hash_bits}sum ${cloudimage} | awk '{print $1}')
+
+        local hashfile=${download_dir}/hash
+
+        echo "I: Checking HASH value before downloading $(basename ${cloudimage})..."
+        wget --quiet ${hashurl} -O ${hashfile} \
+            || panic "failed to download hash file '${hashurl}'"
+
+        local hash1=$(cat ${hashfile} | grep $(basename ${url})$ | awk '{print $1}')
+
+        if [ ${hash1} != ${hash2} ]; then
+            #
+            # Download official Cloud Image
+            #
+            echo "I: download official Cloud Image"
+            wget ${url} -O ${cloudimage} \
+                || panic "failed to download cloudimage '${url}'"
+        fi
+    fi
 
     #
     # Extract raw Cloud Image
