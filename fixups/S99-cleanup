@@ -18,3 +18,8 @@ rm -rf /root/default
 chown -R root:root /boot
 chown -R root:root /etc
 chown -R root:root /root
+
+if [ "x@@INTERNAL@@" = "xtrue" ]; then
+	sed -i "/internal/d" /etc/apt/sources.list.d/ppa-linuxfactory-or-kr.list
+	sed -i "/ppa.linuxfactory.or.kr/d" /etc/hosts
+fi
