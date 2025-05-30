@@ -1,3 +1,0 @@
-get_default_apt_options() {
-	echo "-y"
-}
