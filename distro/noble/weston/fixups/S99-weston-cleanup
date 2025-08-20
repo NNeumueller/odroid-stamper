@@ -1,0 +1,4 @@
+#!/bin/sh
+
+rm -f /etc/xdg/weston/weston.ini
+dpkg-reconfigure odroid-kiosk-weston
