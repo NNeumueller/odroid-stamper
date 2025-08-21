@@ -4,7 +4,7 @@ get_machine_name() {
 
 get_kernel_package() {
         case ${DISTRO} in
-                focal)
+                focal | jammy)
                         echo "5.10.0-odroid-arm64"
                         ;;
                 *)
