@@ -671,6 +671,7 @@ do_custom_installer() {
     [ "x${url}" = "x" ] && panic "E: invalid URL - ${url}"
 
     local cloudimage=${download_dir}/$(basename ${url})
+    local pass_download_image=false
 
     if [ -f ${cloudimage} ]; then
         local hash_bits=256
@@ -691,14 +692,16 @@ do_custom_installer() {
 
         local hash1=$(cat ${hashfile} | grep $(basename ${url})$ | awk '{print $1}')
 
-        if [ ${hash1} != ${hash2} ]; then
-            #
-            # Download official Cloud Image
-            #
-            echo "I: download official Cloud Image"
-            wget ${url} -O ${cloudimage} \
-                || panic "failed to download cloudimage '${url}'"
-        fi
+        [ ${hash1} == ${hash2} ] && pass_download_image=true
+    fi
+
+    if [ "x${pass_download_image}" == "xfalse" ]; then
+        #
+        # Download official Cloud Image
+        #
+        echo "I: download official Cloud Image"
+        wget ${url} -O ${cloudimage} \
+            || panic "failed to download cloudimage '${url}'"
     fi
 
     #
