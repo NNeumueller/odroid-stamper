@@ -531,7 +531,7 @@ do_url_of_cloudimage() {
         # Debian Official Cloud Images
         buster | bullseye | bookworm)
             file=$(lynx -dump -listonly https://cloud.debian.org/images/cloud/${codename}/latest \
-                | grep generic-${arch}.tar.xz | awk '{print $2}' | uniq)
+                | grep nocloud-${arch}.tar.xz | awk '{print $2}' | uniq)
             ;;
 
         # Ubuntu Cloud Images
