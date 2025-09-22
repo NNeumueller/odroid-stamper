@@ -1,14 +1,4 @@
 #!/bin/sh
 
-BOARD=@@DEFAULT_BOARD@@
-
-case ${BOARD} in
-	odroidc5)
-		echo "Use preinstalled /etc/xdg/weston/weston.ini"
-		;;
-	*)
-		rm -f /etc/xdg/weston/weston.ini
-		;;
-esac
-
+rm -f /etc/xdg/weston/weston.ini
 dpkg-reconfigure odroid-kiosk-weston
