@@ -529,7 +529,7 @@ do_url_of_cloudimage() {
 
     case ${codename} in
         # Debian Official Cloud Images
-        buster | bullseye | bookworm)
+        buster | bullseye | bookworm | trixie)
             file=$(lynx -dump -listonly https://cloud.debian.org/images/cloud/${codename}/latest \
                 | grep nocloud-${arch}.tar.xz | awk '{print $2}' | uniq)
             ;;

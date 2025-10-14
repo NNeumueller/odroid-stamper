@@ -1,0 +1,6 @@
+sudo
+openssh-server
+fdisk
+parted
+net-tools
+netplan.io

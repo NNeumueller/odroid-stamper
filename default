@@ -98,7 +98,7 @@ osname() {
         focal | jammy | noble)
             echo "ubuntu"
             ;;
-        buster | bullseye | bookworm)
+        buster | bullseye | bookworm | trixie)
             echo "debian"
             ;;
         *)
@@ -126,6 +126,9 @@ osversion () {
             ;;
         bookworm)
             echo "bookworm"
+            ;;
+        trixie)
+            echo "trixie"
             ;;
     esac
 }
