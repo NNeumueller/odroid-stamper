@@ -73,12 +73,6 @@ fixup_arch() {
     esac
 }
 
-qemu_binary() {
-    if [ "x$(fixup_arch ${1})" != "x$(uname -m)" ]; then
-        echo "/usr/bin/qemu-$(fixup_arch ${ARCH})-static"
-    fi
-}
-
 ask_password() {
     printf '%s\n' "$(dialog --output-fd 1 \
         --passwordbox "Enter your sudo password" 12 50)" | sudo -Svp ''
@@ -469,19 +463,10 @@ do_preinstall() {
             -e "s,@@BUILD_DKMS@@,${BUILD_DKMS},g" \
             ${fixup}
     done
-
-    QEMU_BINARY=$(qemu_binary ${ARCH})
-
-    if [ ! "x${QEMU_BINARY}" = "x" ]; then
-        cp ${QEMU_BINARY} ${rootfs_mnt}/${QEMU_BINARY} || panic "error"
-    fi
 }
 
 do_postinstall() {
     echo "I: removing preinstall scripts..."
-    if [ ! "x${QEMU_BINARY}" = "x" ]; then
-        rm -f ${rootfs_mnt}/${QEMU_BINARY}
-    fi
     rm -f ${rootfs_mnt}/tmp/face.png
     rm -rf ${rootfs_mnt}/host
     rm -rf ${rootfs_mnt}${fixups_dir}
@@ -502,7 +487,7 @@ do_run_fixups() {
     do_copy_custom_files_by_dir overlay ${rootfs_mnt}/overlay
 
     for fixup in $(get_install_fixups); do
-        chroot ${rootfs_mnt} ${QEMU_BINARY} \
+        chroot ${rootfs_mnt} \
             /bin/sh ${fixups_dir}/$(basename ${fixup}) || \
                 panic "error when running the fixup"
     done
