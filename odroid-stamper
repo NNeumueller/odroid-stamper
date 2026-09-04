@@ -2,7 +2,7 @@
 
 #set -x
 
-ODROID_STAMPER_DIR="/usr/share/odroid-stamper"
+ODROID_STAMPER_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
 TOPDIR=${ODROID_STAMPER_CHECKOUT:-${ODROID_STAMPER_DIR}}
 WORKDIR=$PWD
