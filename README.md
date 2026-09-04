@@ -15,7 +15,7 @@
 
 # Installing from a git source tree
 > $ sudo apt install git wget dialog pv lynx qemu-user-binfmt dialog rsync squashfs-tools uuid-runtime debootstrap \
-$ git clone https://github.com/tobetter/odroid-stamper.git \
+$ git clone https://github.com/NNeumueller/odroid-stamper.git \
 $ cd odroid-stamper \
 $ export ODROID_STAMPER_CHECKOUT=$PWD \
 $ sudo ./odroid-stamper
