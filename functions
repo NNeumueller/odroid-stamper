@@ -501,39 +501,10 @@ do_collect_uboot() {
     fi
 }
 
-do_url_of_cloudimage() {
-    local arch=${1}
-    local codename=${2}
-    local flavour=${3}
-
-    case ${flavour} in
-        *-desktop* | weston)
-            flavour="server"
-            ;;
-    esac
-
-    case ${codename} in
-        # Debian Official Cloud Images
-        buster | bullseye | bookworm | trixie)
-            file=$(lynx -dump -listonly https://cloud.debian.org/images/cloud/${codename}/latest \
-                | grep nocloud-${arch}.tar.xz | awk '{print $2}' | uniq)
-            ;;
-
-        # Ubuntu Cloud Images
-        focal | jammy | noble)
-            file="https://cloud-images.ubuntu.com/${codename}/current/${codename}-server-cloudimg-${arch}.squashfs"
-            ;;
-    esac
-
-    echo ${file}
-}
-
 do_create_image() {
     local target=${1}
-    local cloudimage=${2}
 
     [ "x${target}" = "x" ] && panic "no given image file name"
-    [ -f ${cloudimage} ] || panic "E: missing cloudimage ${cloudimage}"
 
     for dir in ${boot_mnt} ${rootfs_mnt}; do
         mountpoint -q ${dir} 2>/dev/null \
@@ -542,32 +513,7 @@ do_create_image() {
 
     mkdir -p ${boot_mnt} ${rootfs_mnt} 2>/dev/null
 
-    #
-    # Expand orignal Cloud Image to raw file system before customizing
-    #
-    echo "I: extracting ${cloudimage} to ${rootfs_mnt}..."
-    case $(basename ${cloudimage}) in
-        *.squashfs)
-            sudo unsquashfs -f -d ${rootfs_mnt} ${cloudimage} || panic "unsquashfs failed"
-            ;;
-
-        *.tar.gz)
-            pv ${cloudimage} \
-                | tar xzf - --strip-component=1 -C ${rootfs_mnt} \
-                    || panic "E: error while extracting"
-            ;;
-
-        debian-*.raw)
-            tmpdir=$(mktemp -d) && mkdir -p ${tmpdir}
-            sudo losetup -fP ${cloudimage} \
-                && LOOPBACK=$(get_lookback_device ${cloudimage}) \
-                && sudo mount ${LOOPBACK}p1 ${tmpdir} \
-                && sudo cp -a ${tmpdir}/* ${rootfs_mnt} \
-                && sudo umount ${tmpdir} \
-                && sudo losetup -D ${LOOPBACK}
-            rm -rf ${tmpdir} ${cloudimage}
-            ;;
-    esac
+    sudo debootstrap --include=sudo,nano,wget,locales,tzdata,dialog,xz-utils,ca-certificates,procps,psmisc,bash,cron,apt-utils,openssh-server,ifupdown,init,bash-completion,iputils-ping,zstd,python3-requests --variant=minbase --arch=arm64 ${DISTRO} ${rootfs_mnt} http://ftp.de.debian.org/debian/
 
     do_mount
     do_preinstall
@@ -647,61 +593,6 @@ do_custom_installer() {
     local out_dir=${2}
 
     mkdir -p ${download_dir} ${out_dir}
-
-    #
-    # Get URL of official Cloud Image for Debian/Ubuntu
-    #
-    echo "I: querying base official Cloud Image for ${ARCH}/${DISTRO}/${FLAVOUR}"
-    url=$(do_url_of_cloudimage ${ARCH} ${DISTRO} ${FLAVOUR})
-    [ "x${url}" = "x" ] && panic "E: invalid URL - ${url}"
-
-    local cloudimage=${download_dir}/$(basename ${url})
-    local pass_download_image=false
-
-    if [ -f ${cloudimage} ]; then
-        local hash_bits=256
-
-        case $(basename ${cloudimage}) in
-            debian-*.tar.xz)
-                hash_bits=512
-        esac
-
-        local hashurl=$(dirname ${url})/SHA${hash_bits}SUMS
-        local hash2=$(sha${hash_bits}sum ${cloudimage} | awk '{print $1}')
-
-        local hashfile=${download_dir}/hash
-
-        echo "I: Checking HASH value before downloading $(basename ${cloudimage})..."
-        wget --quiet ${hashurl} -O ${hashfile} \
-            || panic "failed to download hash file '${hashurl}'"
-
-        local hash1=$(cat ${hashfile} | grep $(basename ${url})$ | awk '{print $1}')
-
-        [ ${hash1} == ${hash2} ] && pass_download_image=true
-    fi
-
-    if [ "x${pass_download_image}" == "xfalse" ]; then
-        #
-        # Download official Cloud Image
-        #
-        echo "I: download official Cloud Image"
-        wget ${url} -O ${cloudimage} \
-            || panic "failed to download cloudimage '${url}'"
-    fi
-
-    #
-    # Extract raw Cloud Image
-    #
-    # Compressed Debian Cloud Image contains 'disk.raw' that is real Cloud
-    # Image, not compressing itself. So needs to extract it and rename it.
-    #
-    case $(basename ${cloudimage}) in
-        debian-*.tar.xz)
-            tar xf ${cloudimage} disk.raw || panic "E: cannot extract raw Debian Cloud Image"
-            cloudimage=${cloudimage%.tar.xz}.raw
-            mv disk.raw ${cloudimage}
-            ;;
-    esac
 
     do_create_image ${TARGET_DEVICE} ${cloudimage}
 
